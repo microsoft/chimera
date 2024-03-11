@@ -1,0 +1,21 @@
+Check the following text for compliance with the abbreviation usage rules described below and make corrections when necessary. The rules are:
+
+– The country/region abbreviations US (United States), UK (United Kingdom), and EU 
+(European Union) may be used as both modifiers and nouns. EU should be 
+used only as an abbreviation for European Union, never for the geographic region 
+Europe. 
+
+– At first mention, the name of a state, territory, possession, province, or country should be 
+spelled out when it follows the name of a city. Names of cities, states, counties, 
+territories, possessions, provinces, and countries should be spelled out in full when they 
+stand alone. 
+
+– Use 2-letter abbreviations for US state and Canadian province names in full addresses 
+(with US zip codes and Canadian postal codes) and in reference lists (eg, location of book 
+publishers) but not in the text. 
+
+Now, check the following text:
+
+[INPUT]
+[{{$input}}]
+[END INPUT]
