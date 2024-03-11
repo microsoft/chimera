@@ -1,0 +1,31 @@
+{
+  "name": "Azure Functions (.NET)",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "forwardPorts": [
+    7071,
+    10000,
+    10001,
+    10002
+  ],
+  "otherPortsAttributes": {
+    "onAutoForward": "ignore"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/azure-cli:1": {},
+	"ghcr.io/jlaundry/devcontainer-features/azure-functions-core-tools:1": {},
+	"ghcr.io/devcontainers/features/python:1": {
+    "version": "3.11"
+  },
+	"ghcr.io/azure/azure-dev/azd:0": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-azurefunctions",
+        "ms-dotnettools.csdevkit"
+      ]
+    }
+  }
+}
