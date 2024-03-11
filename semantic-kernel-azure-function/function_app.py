@@ -1,6 +1,7 @@
 import azure.functions as func
 import logging
 import semantic_kernel as sk
+import os
 from semantic_kernel.connectors.ai.open_ai import (
     AzureChatCompletion,
     # OpenAIChatCompletion,
@@ -45,17 +46,10 @@ async def ExecuteFunction(req: func.HttpRequest) -> func.HttpResponse:
     for k, v in req_body.items():
         kernel_args[k] = v
     
-    
-    # result = kernel.invoke(sk_function, 
-    #                              sk.KernelArguments(
-    #                                  input="""Homo Sapiens (HS) is a common cause of hospital-acquired infection. 
-    #                                  Nosocomial HS infection is also a source of community-acquired infection.
-    #                                  The same can be said of the Apis Mellifera. As everyone knows AM is a well known predator"""))
     result = await kernel.invoke(sk_function, kernel_args)
 
     logging.debug(f"Model response {result.get_inner_content().choices[0].message.content}")    
     return func.HttpResponse(str(result))
-
 
 
     
@@ -63,7 +57,10 @@ def create_kernel() -> sk.Kernel:
 
     kernel = sk.Kernel()
 
-    deployment, api_key, endpoint = sk.azure_openai_settings_from_dot_env()
+    deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT_NAME')
+    api_key = os.getenv('AZURE_OPENAI_API_KEY') 
+    endpoint = os.getenv('AZURE_OPENAI_ENDPOINT')
+
     service_id="default"
     
     #add the chat service
