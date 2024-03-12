@@ -43,6 +43,12 @@ namespace OpenXMLFunction
                         case "STUDY OBJECTIVE":
                             ReplaceSections(ref body, "##OBJECTIVES##", section.Value);
                             break;
+                        case "MATERIALS":
+                            ReplaceSections(ref body, "##MATERIALS##", section.Value);
+                            break;
+                        case "Test System":
+                            ReplaceSections(ref body, "##TESTSYSTEM##", section.Value);
+                            break;
                         default:
                             //Non standard headers to be evaluated here.
                             if (section.Key.ToLower().StartsWith("document title"))
@@ -52,9 +58,7 @@ namespace OpenXMLFunction
                             }
                             break;
                     }
-
                 }
-
                 mainDocumentPart.Document.Save();
             }
 
