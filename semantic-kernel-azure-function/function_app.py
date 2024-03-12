@@ -4,9 +4,9 @@ import semantic_kernel as sk
 import os
 from semantic_kernel.connectors.ai.open_ai import (
     AzureChatCompletion,
-    # OpenAIChatCompletion,
 )
 from semantic_kernel.functions.kernel_arguments import KernelArguments
+from semantic_kernel.planners.sequential_planner import SequentialPlanner
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
