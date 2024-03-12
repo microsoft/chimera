@@ -1,20 +1,12 @@
-Check the following text for compliance with the abbreviation usage rules described below and make corrections when necessary. The rules are:
+Check the following text for compliance with the abbreviation usage rules described below and make corrections when necessary. DO NOT change the meaning of the phrases. The rules are:
 
-– The country/region abbreviations US (United States), UK (United Kingdom), and EU 
-(European Union) may be used as both modifiers and nouns. EU should be 
-used only as an abbreviation for European Union, never for the geographic region 
-Europe. 
+1. The abbreviations 'US' (United States), 'UK' (United Kingdom), and 'EU' (European Union) can be used as both modifiers and nouns. 'EU' should only be used as an abbreviation for the European Union, not for the geographic region Europe.
 
-– At first mention, the name of a state, territory, possession, province, or country should be 
-spelled out when it follows the name of a city. Names of cities, states, counties, 
-territories, possessions, provinces, and countries should be spelled out in full when they 
-stand alone. 
+2. When a city name is followed by the name of a state, territory, possession, province, or country, the latter should be spelled out in full at first mention. When city, state, county, territory, possession, province, and country names stand alone, they should also be spelled out in full.
 
-– Use 2-letter abbreviations for US state and Canadian province names in full addresses 
-(with US zip codes and Canadian postal codes) and in reference lists (eg, location of book 
-publishers) but not in the text. 
+3. Use 2-letter abbreviations for US state and Canadian province names in full addresses (with US zip codes and Canadian postal codes) and in reference lists (e.g., location of book publishers). However, do not use these abbreviations in the main text.
 
-Now, check the following text:
+Your task is to review the following text and make corrections where necessary:
 
 [INPUT]
 [{{$input}}]
