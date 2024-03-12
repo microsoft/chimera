@@ -1,14 +1,13 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using System.Web.Http;
-using System.Net.Http;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace OpenXMLFunction
 {

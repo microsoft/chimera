@@ -1,11 +1,10 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿using Azure.Storage.Blobs;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using Azure.Storage.Blobs;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace OpenXMLFunction
 {
