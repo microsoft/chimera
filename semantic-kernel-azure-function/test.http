@@ -7,6 +7,25 @@ content-type: application/json
 
 ###
 
+POST http://localhost:7071/api/plugins/EditingPlugin/functions/ChangeTense
+content-type: application/json
+
+{
+    "input":"Every morning, Sparkle scampers out of her cozy nest high up in the enchanted oak tree. Her bushy tail twitches with excitement as she explores the forest. She hops from one moss-covered rock to another, her tiny paws leaving sparkling footprints behind.",
+    "tense": "present perfect"
+}
+
+###
+
+POST http://localhost:7071/api/plugins/EditingPlugin/functions/RunningText
+content-type: application/json
+
+{
+    "input":""
+}
+
+###
+
 POST http://localhost:7071/api/planner
 content-type: application/json
 
