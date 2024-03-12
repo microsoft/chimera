@@ -18,9 +18,9 @@ namespace OpenXMLFunction
         {
             string connectionString = System.Environment.GetEnvironmentVariable("MyStorageConnectionString", EnvironmentVariableTarget.Process);
 
-            var text =  await OpenWordDoc.ReadWordDocumentFromBlobStorage(connectionString, "inbound", "TKD-BCS-01991 Protocol-DMPK.docx");
+            (var content, var headers)=  await OpenWordDoc.ReadWordDocumentFromBlobStorage(connectionString, "inbound", "TKD-BCS-01991 Protocol-DMPK.docx");
 
-            return new OkObjectResult(text);
+            return new OkObjectResult(content);
         }
 
         [FunctionName("UpdateWordDoc")]
@@ -31,8 +31,8 @@ namespace OpenXMLFunction
             string connectionString = System.Environment.GetEnvironmentVariable("MyStorageConnectionString", EnvironmentVariableTarget.Process);
             try
             {
-                var text = await OpenWordDoc.ReadWordDocumentFromBlobStorage(connectionString, "inbound", "TKD-BCS-01991 Protocol-DMPK.docx");
-                await UpdateTemplate.UpdateDocumentTemplate(text, connectionString, "templates", "newTemplate.docx", "outbound", $"changedFile_{Guid.NewGuid()}.docx");
+                (var content, var headers) = await OpenWordDoc.ReadWordDocumentFromBlobStorage(connectionString, "inbound", "TKD-BCS-01991 Protocol-DMPK.docx");
+                await UpdateTemplate.UpdateDocumentTemplate(content, headers, connectionString, "templates", "R&D DMPK-PKPD-Report.docx", "outbound", $"changedFile_{Guid.NewGuid()}.docx");
 
                 return new OkResult(); 
             }
