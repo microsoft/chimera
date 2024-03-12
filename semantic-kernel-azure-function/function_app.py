@@ -25,15 +25,8 @@ async def ExecuteFunction(req: func.HttpRequest) -> func.HttpResponse:
         )
 
     kernel = create_kernel()
-
-    plugins_directory = "./plugins"
-    try:
-        plugin = kernel.import_plugin_from_prompt_directory(plugins_directory, plugin_name)
-    except ValueError as e:
-        logging.exception(f"Plugin {plugin_name} not found")
-        return func.HttpResponse(f"Plugin {plugin_name} not found", status_code=404)
-
-    sk_function = plugin[function_name]
+    
+    sk_function = kernel.plugins[plugin_name][function_name]
 
     req_body = {}
     try:
@@ -60,9 +53,20 @@ def create_kernel() -> sk.Kernel:
     deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT_NAME')
     api_key = os.getenv('AZURE_OPENAI_API_KEY') 
     endpoint = os.getenv('AZURE_OPENAI_ENDPOINT')
-
+    script_directory = os.path.dirname(__file__)
+    plugins_directory = os.path.join(script_directory, "plugins")
+    
     service_id="default"
     
+    plugin_names = [plugin for plugin in os.listdir(plugins_directory) if os.path.isdir(os.path.join(plugins_directory, plugin))]
+    
+    # for each plugin, add the plugin to the kernel
+    try:
+        for plugin_name in plugin_names:
+            kernel.import_plugin_from_prompt_directory(plugins_directory, plugin_name)
+    except ValueError as e:
+        logging.exception(f"Plugin {plugin_name} not found")
+
     #add the chat service
     service = AzureChatCompletion(
           service_id=service_id,
@@ -70,8 +74,8 @@ def create_kernel() -> sk.Kernel:
           endpoint=endpoint,
           api_key=api_key
         #   api_version="2024-02-15-preview"
-      )
-    
+    )
+
     kernel.add_service(service)
 
     return kernel

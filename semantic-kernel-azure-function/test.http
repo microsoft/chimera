@@ -1,0 +1,6 @@
+POST http://localhost:7071/api/plugins/EditingPlugin/functions/GeographicAbbreviations
+content-type: application/json
+
+{
+    "input":"The states of Kentucky, Massachusetts and Pennsylvania have the designation of commonwealths. Therefore citizens of Lexington (KY), Lenox (MA) and Philadelphia (PE) are called commoners."
+}
