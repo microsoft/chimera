@@ -11,8 +11,8 @@ from semantic_kernel.functions.kernel_arguments import KernelArguments
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 @app.route(route="plugins/{pluginName}/functions/{functionName}")
-async def ExecuteFunction(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python Http trigger ExecuteFunction processed a request.')
+async def ExecutePluginFunction(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python Http trigger ExecutePluginFunction processed a request.')
 
     plugin_name = req.route_params.get('pluginName')
     function_name = req.route_params.get('functionName')
@@ -41,10 +41,17 @@ async def ExecuteFunction(req: func.HttpRequest) -> func.HttpResponse:
     
     result = await kernel.invoke(sk_function, kernel_args)
 
-    logging.debug(f"Model response {result.get_inner_content().choices[0].message.content}")    
+    logging.debug(f"Model response {result.get_inner_content().choices[0].message.content}")
     return func.HttpResponse(str(result))
 
-
+@app.route(route="planner")
+async def ExecutePlannerFunction(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python Http trigger ExecutePlannerFunction processed a request.')
+    
+    req_body = req.get_json()
+    
+    return func.HttpResponse("Hello World!")
+    
     
 def create_kernel() -> sk.Kernel:
 
@@ -56,7 +63,7 @@ def create_kernel() -> sk.Kernel:
     script_directory = os.path.dirname(__file__)
     plugins_directory = os.path.join(script_directory, "plugins")
     
-    service_id="default"
+    service_id=None
     
     plugin_names = [plugin for plugin in os.listdir(plugins_directory) if os.path.isdir(os.path.join(plugins_directory, plugin))]
     
