@@ -1,7 +1,7 @@
 import azure.functions as func
 import logging
 import semantic_kernel as sk
-import os
+import os, json
 from semantic_kernel.connectors.ai.open_ai import (
     AzureChatCompletion,
 )
@@ -52,6 +52,48 @@ async def ExecutePlannerFunction(req: func.HttpRequest) -> func.HttpResponse:
     
     return func.HttpResponse("Hello World!")
     
+ 
+@app.route(route="transform")
+async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python Http trigger ExecuteTransformFunction processed a request.')
+    
+    kernel = create_kernel()
+    
+    req_body = req.get_json()
+    
+    headers = req_body["headers"]
+    sections = [(name, value) for name, value in req_body["content"].items()]
+    contents = {}
+    
+    for k, v in sections:
+        contents[k] = await transform_content(kernel, v)
+
+    results = []
+    results.append(("headers", headers))
+    results.append(("contents", contents))
+
+    return func.HttpResponse(json.dumps(dict(results)))
+
+
+async def transform_content(kernel: sk.Kernel, content: str) -> str:
+    # 1. Call ChangeTense plugin
+    change_tense_sk_function = kernel.plugins["EditingPlugin"]["ChangeTense"]
+    change_tense_args = KernelArguments()
+    change_tense_args["input"] = content
+    change_tense_args["tense"] = "past"
+    
+    result = await kernel.invoke(change_tense_sk_function, change_tense_args)
+    
+    # 2. Call RunningText plugin
+    running_text_sk_function = kernel.plugins["EditingPlugin"]["RunningText"]
+    running_text_args = KernelArguments()
+    running_text_args["input"] = str(result)
+    
+    result = await kernel.invoke(running_text_sk_function, running_text_args)    
+    
+    # 3. Return results
+    
+    return str(result)
     
 def create_kernel() -> sk.Kernel:
 
