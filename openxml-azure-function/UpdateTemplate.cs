@@ -38,22 +38,25 @@ namespace OpenXMLFunction
                     switch (section.Key)
                     {
                         case "INTRODUCTION":
-                            ReplaceSections(ref body, "##INTRODUCTION##", section.Value);
+                            ReplaceSections(ref body, "##INTRODUCTION##", section.Value.Replace("||", ""));//Remove the double pipes
                             break;
                         case "STUDY OBJECTIVE":
-                            ReplaceSections(ref body, "##OBJECTIVES##", section.Value);
+                            ReplaceSections(ref body, "##OBJECTIVES##", section.Value.Replace("||", ""));
                             break;
                         case "MATERIALS":
-                            ReplaceSections(ref body, "##MATERIALS##", section.Value);
+                            ReplaceSections(ref body, "##MATERIALS##", section.Value.Replace("||", ""));
                             break;
                         case "Test System":
-                            ReplaceSections(ref body, "##TESTSYSTEM##", section.Value);
+                            ReplaceSections(ref body, "##TESTSYSTEM##", section.Value.Replace("||", ""));
                             break;
                         case "TESTING FACILITY":
-                            ReplaceSections(ref body, "##TESTING FACILITY##", section.Value);
+                            ReplaceSections(ref body, "##TESTING FACILITY##", section.Value.Replace("||", ""));
                             break;
                         case "Test Article":
-                            ReplaceSections(ref body, "##Test Article##", section.Value);
+                            ReplaceSections(ref body, "##Test Article##", section.Value.Replace("||", ""));
+                            break;
+                        case "ARCHIVING":
+                            ReplaceSections(ref body, "##ARCHIVING##", section.Value.Replace("||", ""));
                             break;
                         case "Good Laboratory Practice Compliance":
                             string glp = "";
@@ -66,9 +69,6 @@ namespace OpenXMLFunction
                                 glp = "This study was conducted in accordance with the Code of Federal Regulations, Title 21, Part 58: Good Laboratory Practice for Nonclinical Laboratory Studies, issued by the United States Food and Drug Administration. The study was conducted to meet GLP standards, and all data were audited by Quality Assurance to ensure accuracy and compliance. The necessary documentation for reconstruction of this study is available in the study files at Takeda Development Center Americas, Inc. (TDCA) (CITY, ST, USA). The data presented in this report accurately reflect the findings of the study.";
                             }
                             ReplaceSections(ref body, "##GOODLABCOMPLIANCE##", glp);
-                            break;
-                        case "ARCHIVING":
-                            ReplaceSections(ref body, "##ARCHIVING##", section.Value);
                             break;
                         default:
                             //Non standard headers to be evaluated here.

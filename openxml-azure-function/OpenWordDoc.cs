@@ -89,22 +89,24 @@ namespace OpenXMLFunction
                     {
                         if (isSection) //next heading found, save the previous section
                         {
-                            sections.Add(currentKey, paragraphText);
+                            sections.Add(currentKey, paragraphText.TrimEnd('|'));
                             paragraphText = string.Empty;
                         }
                         currentKey = paragraph.InnerText;
                         isSection = true;
-                    }else if (isSection)
+                    }else if (isSection && !string.IsNullOrEmpty(paragraph.InnerText))
                     {
-                        paragraphText += paragraph.InnerText;
+                        paragraphText = paragraphText  + paragraph.InnerText + "||";
                     }
                 }
             }
             // add the last section
             if (isSection)
             {
-                sections.Add(currentKey, paragraphText);
+                sections.Add(currentKey, paragraphText.TrimEnd('|'));
             }
+            //Remove trailing ||
+
             return sections;
         }
       
