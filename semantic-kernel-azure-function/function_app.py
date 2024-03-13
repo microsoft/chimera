@@ -1,18 +1,18 @@
 import azure.functions as func
 import logging
 import semantic_kernel as sk
-import os
+import os, json
 from semantic_kernel.connectors.ai.open_ai import (
     AzureChatCompletion,
-    # OpenAIChatCompletion,
 )
 from semantic_kernel.functions.kernel_arguments import KernelArguments
+from semantic_kernel.planners.sequential_planner import SequentialPlanner
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 @app.route(route="plugins/{pluginName}/functions/{functionName}")
-async def ExecuteFunction(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python Http trigger ExecuteFunction processed a request.')
+async def ExecutePluginFunction(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python Http trigger ExecutePluginFunction processed a request.')
 
     plugin_name = req.route_params.get('pluginName')
     function_name = req.route_params.get('functionName')
@@ -41,10 +41,61 @@ async def ExecuteFunction(req: func.HttpRequest) -> func.HttpResponse:
     
     result = await kernel.invoke(sk_function, kernel_args)
 
-    logging.debug(f"Model response {result.get_inner_content().choices[0].message.content}")    
+    logging.debug(f"Model response {result.get_inner_content().choices[0].message.content}")
     return func.HttpResponse(str(result))
 
+@app.route(route="planner")
+async def ExecutePlannerFunction(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python Http trigger ExecutePlannerFunction processed a request.')
+    
+    req_body = req.get_json()
+    
+    return func.HttpResponse("Hello World!")
+    
+ 
+@app.route(route="transform")
+async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python Http trigger ExecuteTransformFunction processed a request.')
+    
+    kernel = create_kernel()
+    
+    req_body = req.get_json()
+    
+    headers = req_body["headers"]
+    sections = [(name, value) for name, value in req_body["content"].items()]
+    contents = {}
+    
+    for k, v in sections:
+        contents[k] = await transform_content(kernel, v)
 
+    results = []
+    results.append(("content", contents))
+    results.append(("headers", headers))
+    
+    return func.HttpResponse(json.dumps(dict(results)))
+
+
+async def transform_content(kernel: sk.Kernel, content: str) -> str:
+    # 1. Call ChangeTense plugin
+    change_tense_sk_function = kernel.plugins["EditingPlugin"]["ChangeTense"]
+    change_tense_args = KernelArguments()
+    change_tense_args["input"] = content
+    change_tense_args["tense"] = "past"
+    
+    result = await kernel.invoke(change_tense_sk_function, change_tense_args)
+    result = result.value[0].content
+    
+    # 2. Call RunningText plugin
+    running_text_sk_function = kernel.plugins["EditingPlugin"]["RunningText"]
+    running_text_args = KernelArguments()
+    running_text_args["input"] = str(result)
+    
+    result = await kernel.invoke(running_text_sk_function, running_text_args)    
+    result = result.value[0].content
+    
+    # 3. Return results
+    
+    return str(result)
     
 def create_kernel() -> sk.Kernel:
 
@@ -56,7 +107,7 @@ def create_kernel() -> sk.Kernel:
     script_directory = os.path.dirname(__file__)
     plugins_directory = os.path.join(script_directory, "plugins")
     
-    service_id="default"
+    service_id=None
     
     plugin_names = [plugin for plugin in os.listdir(plugins_directory) if os.path.isdir(os.path.join(plugins_directory, plugin))]
     

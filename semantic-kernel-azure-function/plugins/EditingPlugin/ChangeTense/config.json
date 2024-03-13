@@ -8,7 +8,7 @@
             "top_p": 0.0,
             "presence_penalty": 0.0,
             "frequency_penalty": 0.0
-        }      
+        }
     },
     "input_variables":  [
             {
@@ -18,7 +18,7 @@
             },
             {
                 "name": "tense",
-                "description": "Tense we want to set the input to.",          
+                "description": "Tense we want to set the input to.",
                 "default": "present"
             }
    ]    
