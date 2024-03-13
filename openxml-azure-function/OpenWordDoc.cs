@@ -1,10 +1,10 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿using Azure.Storage.Blobs;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using Azure.Storage.Blobs;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace OpenXMLFunction
 {
@@ -12,7 +12,7 @@ namespace OpenXMLFunction
     public static class OpenWordDoc
     {
 
-        public static async Task<Dictionary<string, string>> ReadWordDocumentFromBlobStorage(string connectionString, string containerName, string blobName)
+        public static async Task<(Dictionary<string, string>, Dictionary<string, string>)> ReadWordDocumentFromBlobStorage(string connectionString, string containerName, string blobName)
         {
             BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
 
@@ -28,12 +28,50 @@ namespace OpenXMLFunction
             {
                 Body body = wordDoc.MainDocumentPart.Document.Body;
                 var values = SplitSections(body);
-                return values;
+                var headers = PullHeaders(wordDoc.MainDocumentPart);
+                
+                return (values, headers);
             }
         }
                
+        private static Dictionary<string, string> PullHeaders(MainDocumentPart mainPart)
+        {
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            
+            // Get the header parts
+            IEnumerable<HeaderPart> headerParts = mainPart.HeaderParts;
+            // Loop through each header part
+            foreach (HeaderPart headerPart in headerParts)
+            {
+                // Get the header
+                Header header = headerPart.Header;
+                // Get the paragraphs in the header
+                IEnumerable<Paragraph> paragraphs = header.Elements<Paragraph>();
+                
+                // Define a regular expression that matches "TAK-" followed by one or more digits
+                Regex regTAK = new Regex(@"TAK-(\d+)");
+                //Define a regular expression that matches "TKD-" followed one or more letters and then one or more digits
+                Regex regTKD = new Regex(@"TKD-\w+-(\d+)");
 
-        public static Dictionary<string, string> SplitSections(Body wordDoc)
+                foreach (Paragraph paragraph in paragraphs)
+                {
+                    Match match = regTAK.Match(paragraph.InnerText);
+                    if (match.Success)
+                    {
+                        headers.Add("TAK", match.Value);
+                    }
+                    match = regTKD.Match(paragraph.InnerText);
+                    if (match.Success)
+                    {
+                        headers.Add("TKD", match.Value);
+                    }                    
+                }
+            }
+            return headers;
+        }
+
+
+        private static Dictionary<string, string> SplitSections(Body wordDoc)
         {
 
             Dictionary<string, string> sections = new Dictionary<string, string>();
