@@ -398,3 +398,5 @@ FodyWeavers.xsd
 *.sln.iml
 __azurite_*.json
 __blobstorage__/
+
+.mono/

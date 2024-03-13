@@ -35,7 +35,8 @@ content-type: application/json
 
 ### 
 
-POST http://localhost:7071/api/transform
+#POST http://localhost:7071/api/transform
+POST https://chimera-sk-functions.azurewebsites.net/api/transform
 content-type: application/json
 
 {
@@ -77,4 +78,42 @@ content-type: application/json
 {
     "input":"This is going to be the best day ever!",
     "tense": "past"
+}
+
+###
+
+POST https://chimera-sk-functions.azurewebsites.net/api/transform
+content-type: application/json
+
+{
+    "content": {
+        "INTRODUCTION": "CCR8 expression is upregulated on a highly immunosuppressive subset of regulatory T cells (Tregs) in multiple cancer types. TAK-188 is an Antibody Drug Conjugate (ADC) targeting CCR8. TAK-188 is designed specifically for depleting Tregs and boosting the immune system to produce an antitumoral effect.",
+        "STUDY OBJECTIVE": "The objective of this study is to examine the plasma stability of TAK-188 in vitro in fresh mouse, monkey, and human plasma.",
+        "PROPOSED STUDY SCHEDULE": "Table 2 provides the proposed study schedule."
+    },
+    "headers": {
+        "TAK": "TAK-188",
+        "TKD": "TKD-BCS-01991"
+    }
+}
+
+###
+
+GET http://localhost:7071/api/startOrchestrator
+
+
+###
+POST http://localhost:7071/api/startOrchestrator
+content-type: application/json
+
+{
+    "content": {
+        "INTRODUCTION": "CCR8 expression is upregulated on a highly immunosuppressive subset of regulatory T cells (Tregs) in multiple cancer types. TAK-188 is an Antibody Drug Conjugate (ADC) targeting CCR8. TAK-188 is designed specifically for depleting Tregs and boosting the immune system to produce an antitumoral effect.",
+        "STUDY OBJECTIVE": "The objective of this study is to examine the plasma stability of TAK-188 in vitro in fresh mouse, monkey, and human plasma.",
+        "PROPOSED STUDY SCHEDULE": "Table 2 provides the proposed study schedule."
+    },
+    "headers": {
+        "TAK": "TAK-188",
+        "TKD": "TKD-BCS-01991"
+    }
 }
