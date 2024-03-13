@@ -1,6 +1,8 @@
 ﻿using Azure.Storage.Blobs;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -81,7 +83,7 @@ namespace OpenXMLFunction
                             {
                                 //need to split the section value into parts
                                 var parts = section.Value.Split("||").ToList();
-                                ReplaceSections(ref body, "##APPROVEDBY##", parts[2]);
+                                AddApprovals(ref body, parts);
                             }
                             break;
                     }
@@ -109,6 +111,53 @@ namespace OpenXMLFunction
 
             }
         }
+
+        private static void AddApprovals(ref Body wordDoc, List<string> updateTextList)
+        {
+            var oldTable = wordDoc.Elements<Table>()
+                    .FirstOrDefault(t => t.InnerText.Contains("##APPROVED BY##"));
+
+            if (oldTable != null)
+            {
+                Table newTable = new Table();
+                // Add rows and cells to the newTable as needed...
+                for (int i = 0; i < updateTextList.Count; i = i + 4)
+                {
+                    newTable.Append(CreateNewRow(updateTextList[i], true));
+                    newTable.Append(CreateNewRow(updateTextList[i + 2]));
+                    newTable.Append(CreateNewRow(updateTextList[i + 3]));
+                    newTable.Append(CreateNewRow(" "));
+                }
+
+                wordDoc.ReplaceChild(newTable, oldTable);               
+            }
+        }
+
+        private static TableRow CreateNewRow(string text, bool highlighted = false)
+        {
+            Run run = new Run(new Text(text));
+            if (highlighted)
+            {
+                run.RunProperties = new RunProperties();
+                run.RunProperties.Color = new Color() { Val = "FF0000" }; // Red color
+                run.RunProperties.FontSize = new FontSize() { Val = "22" }; // Font size
+                run.RunProperties.Italic = new Italic(); // Italic text
+            }
+            TableRow newRow = new TableRow();
+            TableCell newCell = new TableCell(new Paragraph(run));
+            if (highlighted)
+            {
+                // Add bottom border to the cell
+                TableCellProperties cellProperties = new TableCellProperties();
+                TableCellBorders cellBorders = new TableCellBorders();
+                cellBorders.BottomBorder = new BottomBorder() { Val = BorderValues.Single, Size = 12 };
+                cellProperties.Append(cellBorders);
+                newCell.Append(cellProperties);
+            }
+            newRow.Append(newCell);
+            return newRow;
+        }
+
 
         private static void ReplaceHeader(ref MainDocumentPart mainDocumentPart, Dictionary<string, string> headerValues)
         {
@@ -141,6 +190,7 @@ namespace OpenXMLFunction
 
             }
         }
+
 
     }
 }

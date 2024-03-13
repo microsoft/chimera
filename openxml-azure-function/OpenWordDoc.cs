@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -29,8 +30,14 @@ namespace OpenXMLFunction
                 Body body = wordDoc.MainDocumentPart.Document.Body;
                 var values = SplitSections(body);
                 var headers = PullHeaders(wordDoc.MainDocumentPart);
-                
                 return (values, headers);
+                //Dictionary<string, string> smaller = new Dictionary<string, string>();
+                //for (int i = 0; i < 3; i++)
+                //{
+                //    smaller.Add(values.Keys.ElementAt(i), values.Values.ElementAt(i));
+                //}
+
+                //return (smaller, headers);
             }
         }
                
