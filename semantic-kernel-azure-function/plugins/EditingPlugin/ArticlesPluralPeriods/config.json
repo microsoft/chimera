@@ -1,9 +1,9 @@
 {
     "schema": 1,
-    "description": "Validates that a paragraph conforms to a style guide for the use of abbreviations.",
+    "description": "Validates that a paragraph conforms to a style guide for articles, pluralization and periods.",
     "execution_settings": {
         "default": {
-            "max_tokens": 1000,
+            "max_tokens": 2000,
             "temperature": 0.5,
             "top_p": 0.0,
             "presence_penalty": 0.0,
