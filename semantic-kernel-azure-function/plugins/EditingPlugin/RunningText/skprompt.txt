@@ -14,5 +14,5 @@ This task involves checking a given text for compliance with certain abbreviatio
 Your task is to review the following text and make corrections where necessary:
 
 [INPUT]
-[{{$input}}]
+{{$input}}
 [END INPUT]

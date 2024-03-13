@@ -11,5 +11,5 @@ Check the following text for compliance with the abbreviation usage rules descri
 Your task is to review the following text and make corrections where necessary:
 
 [INPUT]
-[{{$input}}]
+{{$input}}
 [END INPUT]
