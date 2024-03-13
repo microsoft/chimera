@@ -1,3 +1,5 @@
+[![Deploy Python project to Azure Function App](https://github.com/microsoft/chimera/actions/workflows/azure-functions-app-python.yml/badge.svg)](https://github.com/microsoft/chimera/actions/workflows/azure-functions-app-python.yml)
+
 # Project
 
 > This repo has been populated by an initial template to help get you started. Please
