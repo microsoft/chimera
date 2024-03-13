@@ -21,6 +21,8 @@ name: Deploy Python project to Azure Function App
 on:
   push:
     branches: ["main"]
+    paths:
+    - 'semantic-kernel-azure-function/**'
 
 env:
   AZURE_FUNCTIONAPP_NAME: 'chimera-sk-functions'   # set this to your function app name on Azure
