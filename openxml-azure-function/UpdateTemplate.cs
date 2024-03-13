@@ -35,7 +35,7 @@ namespace OpenXMLFunction
                 foreach (var section in sections)
                 {
 
-                    switch (section.Key)
+                    switch (section.Key.ToUpper())
                     {
                         case "INTRODUCTION":
                             ReplaceSections(ref body, "##INTRODUCTION##", section.Value.Replace("||", ""));//Remove the double pipes
@@ -46,19 +46,19 @@ namespace OpenXMLFunction
                         case "MATERIALS":
                             ReplaceSections(ref body, "##MATERIALS##", section.Value.Replace("||", ""));
                             break;
-                        case "Test System":
+                        case "TEST SYSTEM":
                             ReplaceSections(ref body, "##TESTSYSTEM##", section.Value.Replace("||", ""));
                             break;
                         case "TESTING FACILITY":
                             ReplaceSections(ref body, "##TESTING FACILITY##", section.Value.Replace("||", ""));
                             break;
-                        case "Test Article":
+                        case "TEST ARTICLE":
                             ReplaceSections(ref body, "##Test Article##", section.Value.Replace("||", ""));
                             break;
                         case "ARCHIVING":
                             ReplaceSections(ref body, "##ARCHIVING##", section.Value.Replace("||", ""));
                             break;
-                        case "Good Laboratory Practice Compliance":
+                        case "GOOD LABORATORY PRACTICE COMPLIANCE":
                             string glp = "";
                             if (section.Value.ToLower().Contains("this study was not conducted in accordance") || section.Value.ToLower().Contains("this study will not be conducted in accordance"))
                             {
@@ -72,10 +72,16 @@ namespace OpenXMLFunction
                             break;
                         default:
                             //Non standard headers to be evaluated here.
-                            if (section.Key.ToLower().StartsWith("document title"))
+                            if (section.Key.ToUpper().StartsWith("DOCUMENT TITLE"))
                             {
                                 ReplaceSections(ref body, "TITLE:##TITLE##", $"TITLE: {section.Key.Substring(16)}");
                                 ReplaceSections(ref body, "##TITLE##", section.Key.Substring(16));
+                            }
+                            if (section.Key.ToUpper().StartsWith("PROTOCOL APPROVAL"))
+                            {
+                                //need to split the section value into parts
+                                var parts = section.Value.Split("||").ToList();
+                                ReplaceSections(ref body, "##APPROVEDBY##", parts[2]);
                             }
                             break;
                     }
