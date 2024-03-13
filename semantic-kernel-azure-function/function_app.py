@@ -69,9 +69,9 @@ async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
         contents[k] = await transform_content(kernel, v)
 
     results = []
-    results.append(("headers", headers))
     results.append(("content", contents))
-
+    results.append(("headers", headers))
+    
     return func.HttpResponse(json.dumps(dict(results)))
 
 
