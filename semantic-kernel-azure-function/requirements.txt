@@ -3,4 +3,5 @@
 # Manually managing azure-functions-worker may cause unexpected issues
 
 azure-functions
+azure-functions-durable
 semantic-kernel==0.9.1b1
