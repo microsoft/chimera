@@ -1,4 +1,4 @@
-This task involves checking a given text for compliance with certain abbreviation usage rules. The rules are as follows:
+This task involves checking a given text for compliance with certain abbreviation usage rules. If there are no changes needed, just return the original text. The rules are as follows:
 
 1. Tables and figures should be treated as standalone elements. All abbreviations used in a table or figure, including those in the title, should be defined in a footnote. The Study Summary section of a protocol is considered a table with regard to abbreviations, but abbreviations are defined within the Study Summary, not in a footnote.
 
