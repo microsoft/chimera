@@ -70,7 +70,7 @@ async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
 
     results = []
     results.append(("headers", headers))
-    results.append(("contents", contents))
+    results.append(("content", contents))
 
     return func.HttpResponse(json.dumps(dict(results)))
 
@@ -83,6 +83,7 @@ async def transform_content(kernel: sk.Kernel, content: str) -> str:
     change_tense_args["tense"] = "past"
     
     result = await kernel.invoke(change_tense_sk_function, change_tense_args)
+    result = result.value[0].content
     
     # 2. Call RunningText plugin
     running_text_sk_function = kernel.plugins["EditingPlugin"]["RunningText"]
@@ -90,6 +91,7 @@ async def transform_content(kernel: sk.Kernel, content: str) -> str:
     running_text_args["input"] = str(result)
     
     result = await kernel.invoke(running_text_sk_function, running_text_args)    
+    result = result.value[0].content
     
     # 3. Return results
     
