@@ -6,7 +6,10 @@ import azure.functions as func
 from semantic_kernel.functions.kernel_arguments import KernelArguments
 from semantic_kernel.planners.sequential_planner import SequentialPlanner
 from durable_blueprints import bp
-from helpers import KernelFactory
+from helpers import (
+    KernelFactory,
+    Transform
+)
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 app.register_functions(bp) # register the DF functions
@@ -67,34 +70,10 @@ async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
     contents = {}
     
     for k, v in sections:
-        contents[k] = await transform_content(kernel, v)
+        contents[k] = await Transform.transform_content(kernel, v)
 
     results = []
     results.append(("content", contents))
     results.append(("headers", headers))
     
     return func.HttpResponse(json.dumps(dict(results)))
-
-
-async def transform_content(kernel: sk.Kernel, content: str) -> str:
-    # 1. Call ChangeTense plugin
-    change_tense_sk_function = kernel.plugins["EditingPlugin"]["ChangeTense"]
-    change_tense_args = KernelArguments()
-    change_tense_args["input"] = content
-    change_tense_args["tense"] = "past"
-    
-    result = await kernel.invoke(change_tense_sk_function, change_tense_args)
-    result = result.value[0].content
-    
-    # 2. Call RunningText plugin
-    running_text_sk_function = kernel.plugins["EditingPlugin"]["RunningText"]
-    running_text_args = KernelArguments()
-    running_text_args["input"] = str(result)
-    
-    result = await kernel.invoke(running_text_sk_function, running_text_args)    
-    result = result.value[0].content
-    
-    # 3. Return results
-    
-    return str(result)
-    
