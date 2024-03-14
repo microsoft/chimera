@@ -1,6 +1,6 @@
 {
     "schema": 1,
-    "description": "Validates that a paragraph conforms to a style guide for running text.",
+    "description": "Validates that a paragraph conforms to a style guide for headings and titles.",
     "execution_settings": {
         "default": {
             "max_tokens": 2000,

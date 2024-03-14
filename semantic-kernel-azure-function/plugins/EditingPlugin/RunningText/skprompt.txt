@@ -1,19 +1,18 @@
-Check the following text for compliance with the abbreviation usage rules described below and make corrections when necessary. The rules are:
+This task involves checking a given text for compliance with certain abbreviation usage rules. If there are no changes needed, just return the original text. The rules are as follows:
 
-- Spell out each term to be abbreviated at its first use, followed by the abbreviation in parentheses. Use only the abbreviation thereafter.
-- Consecutive parentheses are allowed.
-- Binomial species names should be abbreviated after their first use without the abbreviation presented in parentheses.
-- Italicize genus and species names (for both organisms and viruses); do not italicize related plurals and adjectival forms or taxa above genus.
+1. Tables and figures should be treated as standalone elements. All abbreviations used in a table or figure, including those in the title, should be defined in a footnote. The Study Summary section of a protocol is considered a table with regard to abbreviations, but abbreviations are defined within the Study Summary, not in a footnote.
 
-For example:
-Correct: "The incidence, severity, and type of adverse events (AEs)…"
-Incorrect: "The incidence, severity, and type of AEs…"
+2. Tables and figures are the only elements that may contain contrived abbreviations (i.e., abbreviations made up by the author to save space).
 
-Correct: "Staphylococcus aureus is a common cause of hospital-acquired infection. Nosocomial S aureus infection is also a source of community-acquired infection."
-Incorrect: "Staphylococcus (S) aureus is a common cause of hospital-acquired infection. Nosocomial S aureus infection is also a source of community-acquired infection."
+3. The following standard abbreviations are used only in virgule constructions, tables, and figures, and are not defined in footnotes:
+   - Days of the week: Mon, Tue, Wed, Thu, Fri, Sat, Sun.
+   - Months: Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec.
+   - No. (number).
+   - Time designations: ms (millisecond), s (second), min (minute), h (hour), d (day), wk (week), mo (month), y (year).
+   - US states and Canadian provinces, e.g., NC, KY, IL (US) and AB, BC, NS (Canada).
 
-Now, check the following text:
+Your task is to review the following text and make corrections where necessary:
 
 [INPUT]
-[{{$input}}]
+{{$input}}
 [END INPUT]

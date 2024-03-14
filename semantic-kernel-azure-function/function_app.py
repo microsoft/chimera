@@ -1,18 +1,22 @@
-import azure.functions as func
 import logging
+import json
 import semantic_kernel as sk
-import os
-from semantic_kernel.connectors.ai.open_ai import (
-    AzureChatCompletion,
-    # OpenAIChatCompletion,
-)
-from semantic_kernel.functions.kernel_arguments import KernelArguments
+import azure.functions as func
 
-app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
+from semantic_kernel.functions.kernel_arguments import KernelArguments
+from semantic_kernel.planners.sequential_planner import SequentialPlanner
+from durable_blueprints import bp
+from helpers import (
+    KernelFactory,
+    Transform
+)
+
+app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
+app.register_functions(bp) # register the DF functions
 
 @app.route(route="plugins/{pluginName}/functions/{functionName}")
-async def ExecuteFunction(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python Http trigger ExecuteFunction processed a request.')
+async def ExecutePluginFunction(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python Http trigger ExecutePluginFunction processed a request.')
 
     plugin_name = req.route_params.get('pluginName')
     function_name = req.route_params.get('functionName')
@@ -24,16 +28,9 @@ async def ExecuteFunction(req: func.HttpRequest) -> func.HttpResponse:
              status_code=400
         )
 
-    kernel = create_kernel()
-
-    plugins_directory = "./plugins"
-    try:
-        plugin = kernel.import_plugin_from_prompt_directory(plugins_directory, plugin_name)
-    except ValueError as e:
-        logging.exception(f"Plugin {plugin_name} not found")
-        return func.HttpResponse(f"Plugin {plugin_name} not found", status_code=404)
-
-    sk_function = plugin[function_name]
+    kernel = KernelFactory.create_kernel()
+    
+    sk_function = kernel.plugins[plugin_name][function_name]
 
     req_body = {}
     try:
@@ -48,30 +45,35 @@ async def ExecuteFunction(req: func.HttpRequest) -> func.HttpResponse:
     
     result = await kernel.invoke(sk_function, kernel_args)
 
-    logging.debug(f"Model response {result.get_inner_content().choices[0].message.content}")    
+    logging.debug(f"Model response {result.get_inner_content().choices[0].message.content}")
     return func.HttpResponse(str(result))
 
-
+@app.route(route="planner")
+async def ExecutePlannerFunction(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python Http trigger ExecutePlannerFunction processed a request.')
     
-def create_kernel() -> sk.Kernel:
-
-    kernel = sk.Kernel()
-
-    deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT_NAME')
-    api_key = os.getenv('AZURE_OPENAI_API_KEY') 
-    endpoint = os.getenv('AZURE_OPENAI_ENDPOINT')
-
-    service_id="default"
+    req_body = req.get_json()
     
-    #add the chat service
-    service = AzureChatCompletion(
-          service_id=service_id,
-          deployment_name=deployment,
-          endpoint=endpoint,
-          api_key=api_key
-        #   api_version="2024-02-15-preview"
-      )
+    return func.HttpResponse("Hello World!")
     
-    kernel.add_service(service)
+ 
+@app.route(route="transform")
+async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python Http trigger ExecuteTransformFunction processed a request.')
+    
+    kernel = KernelFactory.create_kernel()
+    
+    req_body = req.get_json()
+    
+    headers = req_body["headers"]
+    sections = [(name, value) for name, value in req_body["content"].items()]
+    contents = {}
+    
+    for k, v in sections:
+        contents[k] = await Transform.transform_content(kernel, v)
 
-    return kernel
+    results = []
+    results.append(("content", contents))
+    results.append(("headers", headers))
+    
+    return func.HttpResponse(json.dumps(dict(results)))

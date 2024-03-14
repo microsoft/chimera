@@ -1,0 +1,15 @@
+Check the following text for compliance with the abbreviation usage rules described below and make corrections when necessary. If there are no changes needed, just return the original text. The rules are:
+
+1. Do not introduce abbreviations in section headings or on title pages. If not defined previously in running text, spell out the term in the section heading, then present the abbreviation when the term first appears in the running text.
+    Example:
+	9.3 Definitions of Dose-Limiting Toxicity
+	Dose-limiting toxicity (DLT) is defined as…
+
+2. In general, do not use abbreviations on title pages unless the abbreviation is part of a study title.
+3. Use abbreviations that have already been defined in the running text, even if the abbreviation is the sole term in the heading.
+
+Your task is to review the following text and make corrections where necessary:
+
+[INPUT]
+{{$input}}
+[END INPUT]
