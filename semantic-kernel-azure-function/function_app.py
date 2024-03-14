@@ -52,8 +52,26 @@ async def ExecutePlannerFunction(req: func.HttpRequest) -> func.HttpResponse:
     req_body = req.get_json()
     
     return func.HttpResponse("Hello World!")
+
+
+@app.route(route="abbreviationsList")
+async def ExecuteAbbreviationListFunction(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python Http trigger ExecuteAbbreviationListFunction processed a request.')
     
- 
+    req_body = req.get_json()
+    
+    # headers = req_body["headers"]
+    sections = [(name, value) for name, value in req_body["content"].items()]
+    contents = {}
+    
+    for k, v in sections:
+        contents[k] = findAbbreviations(v)
+
+    listOfAbbreviations = contents.values()
+    listOfAbbreviations = set(listOfAbbreviations)
+
+    return func.HttpResponse(listOfAbbreviations)
+
 @app.route(route="transform")
 async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python Http trigger ExecuteTransformFunction processed a request.')
@@ -98,3 +116,11 @@ async def transform_content(kernel: sk.Kernel, content: str) -> str:
     
     return str(result)
     
+def findAbbreviations(content: str)->list[any]:
+    # need to use regex to find all occurrenes of word-like strings containing at least two capital letters
+    # pattern = r'\b[A-Z]{2,}\b'
+    import re
+    # pattern for any string containing at least two captital letters, with all connected non-whitespace characters
+    pattern2 = r'\w*[A-Z]{2,}\w*'
+    matches = re.findall(pattern2, content)
+    return matches    
