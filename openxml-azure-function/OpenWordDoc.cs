@@ -30,6 +30,8 @@ namespace OpenXMLFunction
                 Body body = wordDoc.MainDocumentPart.Document.Body;
                 var values = SplitSections(body);
                 var headers = PullHeaders(wordDoc.MainDocumentPart);
+                //Add a summary value to store the summary result from the AI service
+                values.Add("Summary", "");
                 return (values, headers);
                 //Dictionary<string, string> smaller = new Dictionary<string, string>();
                 //for (int i = 0; i < 3; i++)

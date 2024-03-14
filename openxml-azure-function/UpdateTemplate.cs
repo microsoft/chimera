@@ -73,6 +73,9 @@ namespace OpenXMLFunction
                         case "AMENDMENTS TO, AND DEVIATIONS FROM, THE PROTOCOL":
                             ReplaceSections(ref body, "##DEVIATIONSFROMPROTOCOL##", section.Value.Replace("||", ""));
                             break;
+                        case "SUMMARY":
+                            ReplaceSections(ref body, "##AISUMMARY##", section.Value.Replace("||", ""));
+                            break;
                         default:
                             //Non standard headers to be evaluated here.
                             if (section.Key.ToUpper().StartsWith("DOCUMENT TITLE"))
