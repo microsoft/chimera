@@ -25,7 +25,10 @@
     "vscode": {
       "extensions": [
         "ms-azuretools.vscode-azurefunctions",
-        "ms-dotnettools.csdevkit"
+        "ms-dotnettools.csdevkit",
+        "ms-python.python",
+        "humao.rest-client",
+        "azurite.azurite"
       ]
     }
   },
