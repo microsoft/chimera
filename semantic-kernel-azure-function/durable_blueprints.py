@@ -64,3 +64,17 @@ async def transform_content(content: tuple) -> tuple:
     result = await Transform.transform_content(kernel, start_value)
     
     return (key, result)
+
+@bp.activity_trigger(input_name="content")
+def validate_abbreviations(content: list) -> list:
+    sections = [(name, value) for name, value in content]
+    
+    contents = {}
+    for k, v in sections:
+        contents[k] = Transform.findAbbreviations(v)
+
+    # listOfAbbreviations = list(contents.values())
+    listOfAbbreviations = [item for sublist in contents.values() for item in sublist]
+    listOfAbbreviations = set(listOfAbbreviations)
+
+    return func.HttpResponse(str(listOfAbbreviations))

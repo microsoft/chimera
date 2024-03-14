@@ -1,5 +1,6 @@
 import os
 import logging
+import re
 import semantic_kernel as sk
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 from semantic_kernel.functions.kernel_arguments import KernelArguments
@@ -70,3 +71,12 @@ class Transform:
         # 3. Return results
         
         return str(result)
+    
+    @staticmethod
+    def findAbbreviations(content: str):
+        # need to use regex to find all occurrenes of word-like strings containing at least two capital letters
+        # pattern = r'\b[A-Z]{2,}\b'
+        # pattern for any string containing at least two captital letters, with all connected non-whitespace characters
+        pattern2 = r'\w*[A-Z]{2,}\w*'
+        matches = re.findall(pattern2, content)
+        return matches

@@ -56,26 +56,6 @@ async def ExecutePlannerFunction(req: func.HttpRequest) -> func.HttpResponse:
     
     return func.HttpResponse("Hello World!")
 
-
-@app.route(route="abbreviationsList")
-def ExecuteAbbreviationListFunction(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python Http trigger ExecuteAbbreviationListFunction processed a request.')
-    
-    req_body = req.get_json()
-    
-    # headers = req_body["headers"]
-    sections = [(name, value) for name, value in req_body["content"].items()]
-    contents = {}
-    
-    for k, v in sections:
-        contents[k] = findAbbreviations(v)
-
-    # listOfAbbreviations = list(contents.values())
-    listOfAbbreviations = [item for sublist in contents.values() for item in sublist]
-    listOfAbbreviations = set(listOfAbbreviations)
-
-    return func.HttpResponse(str(listOfAbbreviations))
-
 @app.route(route="transform")
 async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python Http trigger ExecuteTransformFunction processed a request.')
@@ -95,36 +75,4 @@ async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
     results.append(("content", contents))
     results.append(("headers", headers))
     
-    return func.HttpResponse(json.dumps(dict(results)))
-
-
-async def transform_content(kernel: sk.Kernel, content: str) -> str:
-    # 1. Call ChangeTense plugin
-    change_tense_sk_function = kernel.plugins["EditingPlugin"]["ChangeTense"]
-    change_tense_args = KernelArguments()
-    change_tense_args["input"] = content
-    change_tense_args["tense"] = "past"
-    
-    result = await kernel.invoke(change_tense_sk_function, change_tense_args)
-    result = result.value[0].content
-    
-    # 2. Call RunningText plugin
-    running_text_sk_function = kernel.plugins["EditingPlugin"]["RunningText"]
-    running_text_args = KernelArguments()
-    running_text_args["input"] = str(result)
-    
-    result = await kernel.invoke(running_text_sk_function, running_text_args)    
-    result = result.value[0].content
-    
-    # 3. Return results
-    
-    return str(result)
-    
-def findAbbreviations(content: str):
-    # need to use regex to find all occurrenes of word-like strings containing at least two capital letters
-    # pattern = r'\b[A-Z]{2,}\b'
-    import re
-    # pattern for any string containing at least two captital letters, with all connected non-whitespace characters
-    pattern2 = r'\w*[A-Z]{2,}\w*'
-    matches = re.findall(pattern2, content)
-    return matches    
+    return func.HttpResponse(json.dumps(dict(results)))    
