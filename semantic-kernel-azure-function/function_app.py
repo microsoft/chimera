@@ -58,7 +58,7 @@ async def ExecutePlannerFunction(req: func.HttpRequest) -> func.HttpResponse:
 
 
 @app.route(route="abbreviationsList")
-async def ExecuteAbbreviationListFunction(req: func.HttpRequest) -> func.HttpResponse:
+def ExecuteAbbreviationListFunction(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python Http trigger ExecuteAbbreviationListFunction processed a request.')
     
     req_body = req.get_json()
@@ -70,10 +70,11 @@ async def ExecuteAbbreviationListFunction(req: func.HttpRequest) -> func.HttpRes
     for k, v in sections:
         contents[k] = findAbbreviations(v)
 
-    listOfAbbreviations = contents.values()
+    # listOfAbbreviations = list(contents.values())
+    listOfAbbreviations = [item for sublist in contents.values() for item in sublist]
     listOfAbbreviations = set(listOfAbbreviations)
 
-    return func.HttpResponse(listOfAbbreviations)
+    return func.HttpResponse(str(listOfAbbreviations))
 
 @app.route(route="transform")
 async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
@@ -95,7 +96,6 @@ async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
     results.append(("headers", headers))
     
     return func.HttpResponse(json.dumps(dict(results)))
-<<<<<<< HEAD
 
 
 async def transform_content(kernel: sk.Kernel, content: str) -> str:
@@ -120,7 +120,7 @@ async def transform_content(kernel: sk.Kernel, content: str) -> str:
     
     return str(result)
     
-def findAbbreviations(content: str)->list[any]:
+def findAbbreviations(content: str):
     # need to use regex to find all occurrenes of word-like strings containing at least two capital letters
     # pattern = r'\b[A-Z]{2,}\b'
     import re
@@ -128,5 +128,3 @@ def findAbbreviations(content: str)->list[any]:
     pattern2 = r'\w*[A-Z]{2,}\w*'
     matches = re.findall(pattern2, content)
     return matches    
-=======
->>>>>>> origin/main
