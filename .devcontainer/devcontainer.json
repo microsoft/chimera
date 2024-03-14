@@ -28,8 +28,12 @@
         "ms-dotnettools.csdevkit",
         "ms-python.python",
         "humao.rest-client",
-        "azurite.azurite"
-      ]
+        "azurite.azurite",
+        "ms-toolsai.jupyter"
+      ],
+      "settings": {
+        "azureFunctions.projectSubpath": "semantic-kernel-azure-function"
+      }
     }
   },
   "postCreateCommand": "npm install -g azurite"

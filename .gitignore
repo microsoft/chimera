@@ -400,3 +400,4 @@ __azurite_*.json
 __blobstorage__/
 
 .mono/
+samples/
