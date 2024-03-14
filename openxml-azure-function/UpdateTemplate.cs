@@ -12,9 +12,7 @@ namespace OpenXMLFunction
     {
         public static async Task UpdateDocumentTemplate(Dictionary<string, string> sections, Dictionary<string, string> headers, string connectionString, string sourceContainerName, string sourceBlobName, string destinationContainerName, string destinationBlobName)
         {
-            BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
-
-            BlobClient sourceBlobClient = blobServiceClient.GetBlobContainerClient(sourceContainerName).GetBlobClient(sourceBlobName);
+            BlobClient sourceBlobClient = CreateBlobClient(connectionString, sourceContainerName, sourceBlobName);
 
             var memoryStream = new MemoryStream();
             await sourceBlobClient.DownloadToAsync(memoryStream);
@@ -34,7 +32,6 @@ namespace OpenXMLFunction
 
                 foreach (var section in sections)
                 {
-
                     switch (section.Key.ToUpper())
                     {
                         case "INTRODUCTION":
@@ -92,12 +89,21 @@ namespace OpenXMLFunction
                     }
                 }
                 mainDocumentPart.Document.Save();
-            } 
+            }
 
             memoryStream.Position = 0;
-            BlobClient destinationBlobClient = blobServiceClient.GetBlobContainerClient(destinationContainerName).GetBlobClient(destinationBlobName);
+            BlobClient destinationBlobClient = CreateBlobClient(connectionString, destinationContainerName, destinationBlobName);
             await destinationBlobClient.UploadAsync(memoryStream, overwrite: true);
         }
+
+        private static BlobClient CreateBlobClient(string connectionString, string containerName, string blobName)
+        {
+            BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            return containerClient.GetBlobClient(blobName);
+        }
+
+
 
         private static void DocumentTitleReplace(ref MainDocumentPart mainDocumentPart, KeyValuePair<string, string> section)
         {
@@ -133,7 +139,7 @@ namespace OpenXMLFunction
                 {
                     int index = combinedText.IndexOf(searchText);
                     string remainingTextAfterReplacement = combinedText.Substring(index + searchText.Length);
-                                       
+
                     // Add the replaced text
                     previousTextElements.Last().Text = replaceValue + remainingTextAfterReplacement;
 
@@ -177,7 +183,7 @@ namespace OpenXMLFunction
                     newTable.Append(CreateNewRow(" "));
                 }
 
-                wordDoc.ReplaceChild(newTable, oldTable);               
+                wordDoc.ReplaceChild(newTable, oldTable);
             }
         }
 

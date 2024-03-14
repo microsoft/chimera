@@ -13,6 +13,13 @@ namespace OpenXMLFunction
 {
     public static class WordDocManagement
     {
+        private const string StorageConnectionStringName = "MyStorageConnectionString";
+        private const string InboundContainerName = "inbound";
+        private const string OutboundContainerName = "outbound";
+        private const string TemplateContainerName = "templates";
+        private const string TemplateFileName = "R&D DMPK-PKPD-Report.docx";
+
+
         [FunctionName("ParseDocument")]
         public static async Task<IActionResult> ParseDocument(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req)
@@ -22,11 +29,11 @@ namespace OpenXMLFunction
             {
                 return new BadRequestObjectResult("Please pass a fileName on the query string");
             }
-            string connectionString = System.Environment.GetEnvironmentVariable("MyStorageConnectionString", EnvironmentVariableTarget.Process);
 
-            (var content, var headers) = await OpenWordDoc.ReadWordDocumentFromBlobStorage(connectionString, "inbound", fileName);// "TKD-BCS-01991 Protocol-DMPK.docx");
+            string connectionString = GetConnectionString();
 
-            //return JSON object with {content: content, headers: headers}
+            (var content, var headers) = await OpenWordDoc.ReadWordDocumentFromBlobStorage(connectionString, InboundContainerName, fileName);
+
             var result = new { content = content, headers = headers };
             return new OkObjectResult(result);
         }
@@ -36,8 +43,7 @@ namespace OpenXMLFunction
         public static async Task<IActionResult> GenerateDocument(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req)
         {
-            //read in the updated content and headers from the request body
-            string connectionString = System.Environment.GetEnvironmentVariable("MyStorageConnectionString", EnvironmentVariableTarget.Process);
+            string connectionString = GetConnectionString();
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -50,8 +56,8 @@ namespace OpenXMLFunction
                 {
                     return new BadRequestObjectResult("Please pass content and headers in the request body");
                 }
-                
-                await UpdateTemplate.UpdateDocumentTemplate(content, headers, connectionString, "templates", "R&D DMPK-PKPD-Report.docx", "outbound", $"changedFile_{Guid.NewGuid()}.docx");
+
+                await UpdateTemplate.UpdateDocumentTemplate(content, headers, connectionString, TemplateContainerName, TemplateFileName, OutboundContainerName, $"changedFile_{Guid.NewGuid()}.docx");
 
                 return new OkResult(); 
             }
@@ -62,7 +68,10 @@ namespace OpenXMLFunction
             
             
         }
+
+        private static string GetConnectionString()
+        {
+            return System.Environment.GetEnvironmentVariable(StorageConnectionStringName, EnvironmentVariableTarget.Process);
+        }
     }
-
-
 }
