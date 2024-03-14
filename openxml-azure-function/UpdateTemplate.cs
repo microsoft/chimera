@@ -28,6 +28,9 @@ namespace OpenXMLFunction
                 MainDocumentPart mainDocumentPart = wordDoc.MainDocumentPart;
                 //Repalce headers
                 ReplaceHeader(ref mainDocumentPart, headers);
+                FindAndReplace(ref mainDocumentPart, "TAKXXX", headers["TAK"].Substring(4));//TAK-XXX doesn't show the hyphen in InnerText
+                FindAndReplace(ref mainDocumentPart, "TKD-BCS-XXXXX-RX", headers["TKD"]);
+                FindAndReplace(ref mainDocumentPart, "TKD-BCS-XXXXX", headers["TKD"]);
 
                 mainDocumentPart.Document.Save();
 
@@ -96,6 +99,32 @@ namespace OpenXMLFunction
             await destinationBlobClient.UploadAsync(memoryStream, overwrite: true);
         }
 
+        private static void FindAndReplace(ref MainDocumentPart mainDocumentPart, string searchText, string replaceValue)
+        {
+            //Method that looks for specific text in the document and replaces it with the replace value
+            var body = mainDocumentPart.Document.Body;
+
+            List<Text> previousTextElements = new List<Text>();
+            foreach (var text in body.Descendants<Text>())
+            {
+                previousTextElements.Add(text);
+                string combinedText = string.Concat(previousTextElements.Select(t => t.Text));
+
+                if (combinedText.Contains(searchText))
+                {
+                    int index = combinedText.IndexOf(searchText);
+                    string remainingTextAfterReplacement = combinedText.Substring(index + searchText.Length);
+                                       
+                    // Add the replaced text
+                    previousTextElements.Last().Text = replaceValue + remainingTextAfterReplacement;
+
+                    // Clear the list of previous elements
+                    previousTextElements.Clear();
+                }
+            }         
+
+        }
+
         private static void ReplaceSections(ref Body wordDoc, string searchText, string updateText)
         {
             var paragraphs = wordDoc.Elements<Paragraph>()
@@ -157,7 +186,6 @@ namespace OpenXMLFunction
             newRow.Append(newCell);
             return newRow;
         }
-
 
         private static void ReplaceHeader(ref MainDocumentPart mainDocumentPart, Dictionary<string, string> headerValues)
         {
