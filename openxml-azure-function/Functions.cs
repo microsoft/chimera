@@ -27,7 +27,6 @@ namespace OpenXMLFunction
             (var content, var headers) = await OpenWordDoc.ReadWordDocumentFromBlobStorage(connectionString, "inbound", fileName);// "TKD-BCS-01991 Protocol-DMPK.docx");
 
             //return JSON object with {content: content, headers: headers}
-            
             var result = new { content = content, headers = headers };
             return new OkObjectResult(result);
         }
