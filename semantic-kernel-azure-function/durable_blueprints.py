@@ -42,7 +42,9 @@ def my_orchestrator(context: df.DurableOrchestrationContext):
     content = {}
     for k, v in outputs:
         content[k] = v    
-    
+    # Add a new activity to the content for Summary
+    content["Summary"] = yield context.call_activity("summarize_content", content)
+
     response = []
     response.append(("content", content))
     response.append(("headers", headers))
@@ -64,3 +66,21 @@ async def transform_content(content: tuple) -> tuple:
     result = await Transform.transform_content(kernel, start_value)
     
     return (key, result)
+
+@bp.activity_trigger(input_name="summary")
+async def summarize_content(content: list) -> str:
+    kernel = KernelFactory.create_kernel()
+    keys = ("INTRODUCTION", "STUDY OBJECTIVE", "MATERIALS", "Test Article", "Test System", "Plasma incubation", "Table 3Incubation Conditions", "BIOANALYSIS")
+
+    start_value = content[0][1]
+    
+    for k, v in content:
+        if (k in keys):
+             start_value =  start_value + ' ' + v
+
+
+    running_text_sk_function = kernel.plugins["EditingPlugin"]["Summary"]
+    running_text_args = KernelArguments(input=str(start_value))
+    result = await kernel.invoke(running_text_sk_function, running_text_args)    
+
+    return (result)

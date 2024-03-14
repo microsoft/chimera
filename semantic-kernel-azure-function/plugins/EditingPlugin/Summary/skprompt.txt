@@ -1,0 +1,12 @@
+As a bio-research assistant, your task is to provide a rearsearch summary based on the input
+Items that need to be include are
+points to emphasize
+information about the population 
+compound and dosages 
+overall findings
+Validate there are no contradictions 
+
+
+[INPUT]
+{{$input}}
+[END INPUT]
