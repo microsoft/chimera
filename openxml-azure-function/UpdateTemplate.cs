@@ -28,8 +28,8 @@ namespace OpenXMLFunction
                 MainDocumentPart mainDocumentPart = wordDoc.MainDocumentPart;
                 //Repalce headers
                 ReplaceHeader(ref mainDocumentPart, headers);
-                FindAndReplace(ref mainDocumentPart, "TAKXXX", headers["TAK"].Substring(4));
-                FindAndReplace(ref mainDocumentPart, "TKD-BCS-XXXXX-RX", headers["TKD"]);//"TKD-BCS-XXXXX-RX" "TKD-BCS-XXXXX"
+                FindAndReplace(ref mainDocumentPart, "TAKXXX", headers["TAK"].Substring(4));//TAK-XXX doesn't show the hyphen in InnerText
+                FindAndReplace(ref mainDocumentPart, "TKD-BCS-XXXXX-RX", headers["TKD"]);
                 FindAndReplace(ref mainDocumentPart, "TKD-BCS-XXXXX", headers["TKD"]);
 
                 mainDocumentPart.Document.Save();
