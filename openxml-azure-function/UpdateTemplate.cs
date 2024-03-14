@@ -1,8 +1,6 @@
 ﻿using Azure.Storage.Blobs;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,13 +24,10 @@ namespace OpenXMLFunction
             {
 
                 MainDocumentPart mainDocumentPart = wordDoc.MainDocumentPart;
-                //Repalce headers
                 ReplaceHeader(ref mainDocumentPart, headers);
                 FindAndReplace(ref mainDocumentPart, "TAKXXX", headers["TAK"].Substring(4));//TAK-XXX doesn't show the hyphen in InnerText
                 FindAndReplace(ref mainDocumentPart, "TKD-BCS-XXXXX-RX", headers["TKD"]);
                 FindAndReplace(ref mainDocumentPart, "TKD-BCS-XXXXX", headers["TKD"]);
-
-                mainDocumentPart.Document.Save();
 
                 //Replace sections
                 Body body = mainDocumentPart.Document.Body;
@@ -75,12 +70,14 @@ namespace OpenXMLFunction
                             }
                             ReplaceSections(ref body, "##GOODLABCOMPLIANCE##", glp);
                             break;
+                        case "AMENDMENTS TO, AND DEVIATIONS FROM, THE PROTOCOL":
+                            ReplaceSections(ref body, "##DEVIATIONSFROMPROTOCOL##", section.Value.Replace("||", ""));
+                            break;
                         default:
                             //Non standard headers to be evaluated here.
                             if (section.Key.ToUpper().StartsWith("DOCUMENT TITLE"))
                             {
-                                ReplaceSections(ref body, "TITLE:##TITLE##", $"TITLE: {section.Key.Substring(16)}");
-                                ReplaceSections(ref body, "##TITLE##", section.Key.Substring(16));
+                                DocumentTitleReplace(ref mainDocumentPart, section);
                             }
                             if (section.Key.ToUpper().StartsWith("PROTOCOL APPROVAL"))
                             {
@@ -92,11 +89,30 @@ namespace OpenXMLFunction
                     }
                 }
                 mainDocumentPart.Document.Save();
-            }
+            } 
 
             memoryStream.Position = 0;
             BlobClient destinationBlobClient = blobServiceClient.GetBlobContainerClient(destinationContainerName).GetBlobClient(destinationBlobName);
             await destinationBlobClient.UploadAsync(memoryStream, overwrite: true);
+        }
+
+        private static void DocumentTitleReplace(ref MainDocumentPart mainDocumentPart, KeyValuePair<string, string> section)
+        {
+            var titlePage = section.Value.Split("||").ToList();
+            var body = mainDocumentPart.Document.Body;
+
+            ReplaceSections(ref body, "TITLE:##TITLE##", $"TITLE: {section.Key.Substring(16)}");
+            ReplaceSections(ref body, "##TITLE##", section.Key.Substring(16));
+            //Replace Study Director
+            string studyDir = titlePage.Where(t => t.Contains("Study Director")).FirstOrDefault();
+            if (!string.IsNullOrEmpty(studyDir))
+            {
+                string[] splitValue = studyDir.Split(":");
+                if (splitValue.Length > 1)
+                {
+                    FindAndReplace(ref mainDocumentPart, "STUDYDIRECTOR", splitValue[1]);
+                }
+            }
         }
 
         private static void FindAndReplace(ref MainDocumentPart mainDocumentPart, string searchText, string replaceValue)
@@ -121,8 +137,8 @@ namespace OpenXMLFunction
                     // Clear the list of previous elements
                     previousTextElements.Clear();
                 }
-            }         
-
+            }
+            mainDocumentPart.Document.Save();
         }
 
         private static void ReplaceSections(ref Body wordDoc, string searchText, string updateText)
@@ -217,6 +233,7 @@ namespace OpenXMLFunction
                 }
 
             }
+            mainDocumentPart.Document.Save();
         }
 
 
