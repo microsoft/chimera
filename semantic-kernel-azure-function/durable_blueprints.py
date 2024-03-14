@@ -3,7 +3,10 @@ import logging
 import azure.functions as func
 import azure.durable_functions as df
 
-from helpers import KernelFactory
+from helpers import (
+    KernelFactory,
+    Transform
+)
 from semantic_kernel.functions.kernel_arguments import KernelArguments
 
 # To learn more about blueprints in the Python prog model V2,
@@ -58,22 +61,6 @@ async def transform_content(content: tuple) -> tuple:
     key = content[0]
     start_value = content[1]
     
-    # 1. Call ChangeTense plugin
-    change_tense_sk_function = kernel.plugins["EditingPlugin"]["ChangeTense"]
-    change_tense_args = KernelArguments()
-    change_tense_args["input"] = start_value
-    change_tense_args["tense"] = "past"
+    result = await Transform.transform_content(kernel, start_value)
     
-    result = await kernel.invoke(change_tense_sk_function, change_tense_args)
-    result = result.value[0].content
-    
-    # 2. Call RunningText plugin
-    running_text_sk_function = kernel.plugins["EditingPlugin"]["RunningText"]
-    running_text_args = KernelArguments()
-    running_text_args["input"] = str(result)
-    
-    result = await kernel.invoke(running_text_sk_function, running_text_args)    
-    result = result.value[0].content
-    
-    # 3. Return results
     return (key, result)

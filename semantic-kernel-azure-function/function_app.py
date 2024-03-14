@@ -6,7 +6,10 @@ import azure.functions as func
 from semantic_kernel.functions.kernel_arguments import KernelArguments
 from semantic_kernel.planners.sequential_planner import SequentialPlanner
 from durable_blueprints import bp
-from helpers import KernelFactory
+from helpers import (
+    KernelFactory,
+    Transform
+)
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 app.register_functions(bp) # register the DF functions
@@ -85,13 +88,14 @@ async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
     contents = {}
     
     for k, v in sections:
-        contents[k] = await transform_content(kernel, v)
+        contents[k] = await Transform.transform_content(kernel, v)
 
     results = []
     results.append(("content", contents))
     results.append(("headers", headers))
     
     return func.HttpResponse(json.dumps(dict(results)))
+<<<<<<< HEAD
 
 
 async def transform_content(kernel: sk.Kernel, content: str) -> str:
@@ -124,3 +128,5 @@ def findAbbreviations(content: str)->list[any]:
     pattern2 = r'\w*[A-Z]{2,}\w*'
     matches = re.findall(pattern2, content)
     return matches    
+=======
+>>>>>>> origin/main
