@@ -4,6 +4,8 @@ import re
 import semantic_kernel as sk
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 from semantic_kernel.functions.kernel_arguments import KernelArguments
+from azure.identity import DefaultAzureCredential
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 class KernelFactory:
     @staticmethod
@@ -79,3 +81,30 @@ class Transform:
         pattern = r'\w*[A-Z]{2,}\w*'
         matches = re.findall(pattern, content)
         return matches
+
+class BlobClientFactory:
+    @staticmethod
+    def create_blob_client(account_url: str, container_name:str, blob_name:str) -> BlobClient:
+        creds = BlobClientFactory.get_default_credentials()
+        return BlobClient(account_url, container_name, blob_name, None, creds)
+    
+    @staticmethod
+    def create_container_client(account_url:str, container_name: str) -> ContainerClient:
+        creds = BlobClientFactory.get_default_credentials()
+        return ContainerClient(account_url, container_name, creds)
+    
+    @staticmethod
+    def create_storage_client(account_url:str) -> BlobServiceClient:
+        creds = BlobClientFactory.get_default_credentials()
+        return BlobServiceClient(account_url, creds)
+    
+    @staticmethod
+    def get_storage_account_settings_from_env() -> tuple:
+        account_url = os.getenv('AZURE_STORAGE_ACCOUNT_URL')
+        container_name = os.getenv('AZURE_STORAGE_CONTAINER_NAME')
+        blob_name = os.getenv('AZURE_STORAGE_BLOB_NAME')
+        return (account_url, container_name, blob_name)
+
+    @staticmethod
+    def get_default_credentials() -> DefaultAzureCredential:
+        return DefaultAzureCredential()
