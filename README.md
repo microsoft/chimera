@@ -1,16 +1,42 @@
 [![Deploy Python project to Azure Function App](https://github.com/microsoft/chimera/actions/workflows/azure-functions-app-python.yml/badge.svg)](https://github.com/microsoft/chimera/actions/workflows/azure-functions-app-python.yml)
 
-# Project
+# Project Chimera
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+This repo contains 3 Azure Function projects which demonstrate how to:
+1. Pull content from a Word Document.
+1. Use Azure OpenAI to validate and transform extracted content against known style guides.
+1. Re-assemble a template document with generated contents.
 
-As the maintainer of this project, please make a few updates:
+## Projects
+- [semantic-kernal-azure-function](semantic-kernal-azure-function) - A Durable Python Azure Function which accepts extracted document contents and uses a selection of Semantic Kernel functions to validate and transform content.
+- [openxml-azure-function](openxml-azure-function) - A Dotnet Core Azure Function project which extracts content from a word document and re-assembles a template document using supplied content sections.
+- [openxml-azure-function-python](openxml-azure-function-python) - A partial example of implementing the dotnet core document assembly functions using python.
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+# Getting Started
+## semantic-kernal-azure-function
+1. Clone this repo to your machine
+1. Rename the [local.settings.example.json](semantic-kernal-azure-function/local.settings.example.json) file to `local.settings.json`
+1. Edit the file and update with your settings:
+```
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AZURE_OPENAI_DEPLOYMENT_NAME": "gpt-35-turbo-16k",
+    "AZURE_OPENAI_ENDPOINT": "",
+    "AZURE_OPENAI_API_KEY": "",
+    "AZURE_STORAGE_ACCOUNT_URL": "",
+    "AZURE_STORAGE_CONTAINER_NAME": "files",
+    "AZURE_STORAGE_BLOB_NAME": "Abbreviations.csv",
+    "AZURE_CLIENT_ID": "",
+    "AZURE_CLIENT_SECRET": "",
+    "AZURE_TENANT_ID": ""
+  }
+}
+```
+
 
 ## Contributing
 
