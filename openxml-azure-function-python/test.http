@@ -1,0 +1,38 @@
+GET http://localhost:7071/api/ParseDocument?filename=TKD-BCS-01991 Protocol-DMPK.docx
+
+
+
+
+
+POST http://localhost:7071/api/GenerateDocument HTTP/1.1
+content-type: application/json
+{
+  "content": {
+    "Document Title: Examination of the Stability of TAK-188 in Mouse, Monkey, and Human Plasma": "Document Version: 1.0||Effective Date: 14 Apr 2023 14:22:20 (GMT-04:00)||Signed By : Guo, Yukuang (mne9509) Decision : Approved||Decision Date : 14 Apr 2023 13:52:28 (GMT-04:00)||Role : Approver Purpose : Approval||Meaning Of Signature : I approve this document||Signed By : Zhu, Xiaochun Sean (UBN7028) Decision : Approved||Decision Date : 14 Apr 2023 14:22:06 (GMT-04:00)||Role : Approver Purpose : Approval||Meaning Of Signature : I approve this document||Signature Manifestation Page 1 of 1||NONCLINICAL STUDY PROTOCOL\tMetabolism Identification Title:\tExamination of the Stability of TAK-188 in Mouse, Monkey, and Human Plasma Protocol:\t\tTKD-BCS-01991||Testing Facility:\tTakeda Development Center Americas, Inc.||35 Landsdowne Street||Cambridge, MA 02139 USA||Study Director:\t\tYukuang Guo Ph (312) 722-0479||Proposed Study Dates:\tExperimental Start: 01 April 2023||Experimental End: 01 July 2023",
+    "INTRODUCTION": "CCR8 expression is upregulated on a highly immunosuppressive subset of regulatory T cells (Tregs) in multiple cancer types. TAK-188 is an Antibody Drug Conjugate (ADC) targeting CCR8. TAK-188 is designed specifically for depleting Tregs and boosting the immune system to produce an antitumoral effect.",
+    "STUDY OBJECTIVE": "The objective of this study is to examine the plasma stability of TAK-188 in vitro in fresh mouse, monkey, and human plasma.",
+    "REGULATORY GUIDELINES": "",
+    "Good Laboratory Practice Compliance": "This study will not be conducted in accordance with the Code of Federal Regulations, Title 21, Part 58: Good Laboratory Practice for Nonclinical Laboratory Studies, issued by the United States Food and Drug Administration. However, this study will be conducted according to standard departmental practices.",
+    "Amendments To, and Deviations From, the Protocol": "Any changes to the protocol will be described in a written protocol amendment approved by the Study Director specified in this protocol and recorded in the raw data at Takeda Development Center Americas, Inc. (TDCA) (Cambridge, MA, USA). Any deviations from the protocol will be documented appropriately and listed in the final report.",
+    "TESTING FACILITY": "All aspects of this study will be conducted by personnel of TDCA (Cambridge, MA, USA).",
+    "STUDY PERSONNEL": "Table 1 lists personnel involved in this study.",
+    "PROPOSED STUDY SCHEDULE": "Table 2 provides the proposed study schedule.",
+    "Table 2\tProposed Study Schedule": "Study Component\tProposed Date||Experimental start date:\t01 April 2023||Experimental end date:\t01 July 2023",
+    "MATERIALS": "Unless otherwise stated, all analytical reagents will be at least of high-performance liquid chromatography (HPLC) reagent grade. Unless otherwise noted, all chemicals, with the exception of the test article (TAK-188) will be purchased from Sigma-Aldrich Corp (St. Louis, MO, USA) or supplied by personnel of TDCA\u2019s Lab Operations group. All reagents, with the exception of the test article, will be less than 5 years old or formulated by personnel of TDCA\u2019s Lab Operations group.",
+    "Test Article": "TAK-188 will be supplied by personnel of TDCA\u2019s Sample Bank and stored at approximately \u221220\u00b0C.||The test article is early, research-grade material, which has not been completely characterized for identity, purity, and stability, and which does not have a Certificate of Analysis. The identity, storage temperature, lot (batch) numbers, and formulation requirements will be documented in the study file.",
+    "Test System": "Fresh mouse, monkey, and human plasma will be purchased from external vendor (information will be provided in the final report).",
+    "Reagents and Instruments": "The reagents and instruments used in this study will be specified in the raw data and final report.",
+    "ASSAY METHODOLOGY": "",
+    "Plasma incubation": "The experimental procedure and final conditions will be specified in the final report. The incubation will be run in triplicates. The incubation conditions are shown in Table 3.",
+    "Table 3\tIncubation Conditions": "Matrix:\tFresh plasma||Species:\tMouse, monkey, human||Time (hours):\t0, 4, and 24||Concentration (\u00b5g/mL):\t100||Incubator Conditions:\t5% CO2, ~93% humidity, 37\u00b0C||Shaking Rate (rpm):\t75||rpm: revolutions per minute.",
+    "BIOANALYSIS": "The monkey and human samples will be shipped to Frontage Laboratories and mouse samples will be shipped to QPS for bioanalysis (the method and details will be included in the final report) as shown below:||Frontage Laboratories Attn: Sample Management 700 Pennsylvania Drive||Exton, PA 1943||Email: Sample_Management@frontagelab.com Phone: (610) 232-0100||Attn: Sample Coordinator/Lan Li QPS, LLC||3 Innovation Way||Newark, DE 19711||Tel: (302) 369-5120||Fax: (302) 369-5602||Email: sample@qps.com",
+    "DATA INTERPRETATION AND REPORTING": "The Study Director, with participation by other contributing scientists, as appropriate, will prepare a report describing, but not necessarily be limited to, the following: a summary of the study, study objectives, materials and methods, and results and interpretation, including any appropriate tables, figures, and/or appendices.",
+    "REMEASUREMENT AND ADOPTION OF THE DATA": "If the Study Director believes that a certain event (eg, technical error, instrumentation problem, or scientifically unexpected phenomena) may have affected the reliability of the present study, the Study Director may deem it necessary to repeat the experiment(s) in the study. The reasons for repeating any steps of an experiment, and for adoption or exclusion of the results, will be noted in the raw data and the final report.",
+    "ARCHIVING": "All study data, including the protocol (with any amendments and deviations), final report, study file, laboratory study notebooks, instrument printouts, and other raw data or materials from the study will be maintained at TDCA according to standard departmental procedures.||Title:    Examination of the Stability of TAK-188 in Mouse, Monkey, and Human Plasma",
+    "PROTOCOL APPROVAL": "(see electronic signature page)||Yukuang Guo Study Director Scientist I||Drug Metabolism and Pharmacokinetics||(see electronic signature page)||Xiaochun Sean Zhu Scientific Director||Drug Metabolism and Pharmacokinetics"
+  },
+  "headers": {
+    "TKD": "TKD-BCS-01991",
+    "TAK": "TAK-188"
+  }
+}
