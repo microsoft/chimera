@@ -75,8 +75,7 @@ class Transform:
     @staticmethod
     def findAbbreviations(content: str):
         # need to use regex to find all occurrenes of word-like strings containing at least two capital letters
-        # pattern = r'\b[A-Z]{2,}\b'
         # pattern for any string containing at least two captital letters, with all connected non-whitespace characters
-        pattern2 = r'\w*[A-Z]{2,}\w*'
-        matches = re.findall(pattern2, content)
+        pattern = r'\w*[A-Z]{2,}\w*'
+        matches = re.findall(pattern, content)
         return matches
