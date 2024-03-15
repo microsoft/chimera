@@ -8,14 +8,14 @@ This repo contains 3 Azure Function projects which demonstrate how to:
 1. Re-assemble a template document with generated contents.
 
 ## Projects
-- [semantic-kernal-azure-function](semantic-kernal-azure-function) - A Durable Python Azure Function which accepts extracted document contents and uses a selection of Semantic Kernel functions to validate and transform content.
+- [semantic-kernel-azure-function](semantic-kernel-azure-function) - A Durable Python Azure Function which accepts extracted document contents and uses a selection of Semantic Kernel functions to validate and transform content.
 - [openxml-azure-function](openxml-azure-function) - A Dotnet Core Azure Function project which extracts content from a word document and re-assembles a template document using supplied content sections.
 - [openxml-azure-function-python](openxml-azure-function-python) - A partial example of implementing the dotnet core document assembly functions using python.
 
 # Getting Started
-## semantic-kernal-azure-function
+## semantic-kernel-azure-function
 1. Clone this repo to your machine
-1. Rename the [local.settings.example.json](semantic-kernal-azure-function/local.settings.example.json) file to `local.settings.json`
+1. Rename the [local.settings.example.json](semantic-kernel-azure-function/local.settings.example.json) file to `local.settings.json`
 1. Edit the file and update with your settings:
 ```
 {
