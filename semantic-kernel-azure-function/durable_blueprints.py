@@ -34,16 +34,19 @@ def my_orchestrator(context: df.DurableOrchestrationContext):
     
     sections = yield context.call_activity("get_sections", json.dumps(payload))
     tasks = []
-    for s in sections:
-        tasks.append(context.call_activity("transform_content", s))
+    #for s in sections:
+        #tasks.append(context.call_activity("transform_content", s))
     
-    outputs = yield context.task_all(tasks)
+    #outputs = yield context.task_all(tasks)
+    outputs = sections
     
     content = {}
     for k, v in outputs:
         content[k] = v    
     # Add a new activity to the content for Summary
     content["Summary"] = yield context.call_activity("summarize_content", outputs)
+    
+    abbvs = yield context.call_activity("validate_abbreviations", outputs)
 
     response = []
     response.append(("content", content))
@@ -87,14 +90,12 @@ async def summarize_content(content: list) -> str:
 
 @bp.activity_trigger(input_name="content")
 def validate_abbreviations(content: list) -> list:
-    sections = [(name, value) for name, value in content]
-    
-    contents = {}
-    for k, v in sections:
-        contents[k] = Transform.findAbbreviations(v)
+    sections = [(name, Transform.findAbbreviations(value)) for name, value in content]   
 
-    # listOfAbbreviations = list(contents.values())
-    listOfAbbreviations = [item for sublist in contents.values() for item in sublist]
+    listOfAbbreviations = []
+    for k, v in sections:
+        listOfAbbreviations.extend(v)
+    #listOfAbbreviations = [item for sublist in sections.values() for item in sublist]
     listOfAbbreviations = set(listOfAbbreviations)
 
-    return func.HttpResponse(str(listOfAbbreviations))
+    return list(listOfAbbreviations)
