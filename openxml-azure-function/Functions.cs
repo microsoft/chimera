@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -52,12 +53,16 @@ namespace OpenXMLFunction
                 var content = data?.content.ToObject<Dictionary<string, string>>();
                 var headers = data?.headers.ToObject<Dictionary<string, string>>();
 
-                if (content == null || headers == null)
+                List<Dictionary<string, string>> abbreviationsList = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(data?.abbreviations.ToString());
+                var abbreviations = abbreviationsList.SelectMany(dict => dict)
+                                                     .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+                if (content == null || headers == null || abbreviations == null)
                 {
-                    return new BadRequestObjectResult("Please pass content and headers in the request body");
+                    return new BadRequestObjectResult("Please pass content, abbreviations and headers in the request body");
                 }
 
-                await UpdateTemplate.UpdateDocumentTemplate(content, headers, connectionString, TemplateContainerName, TemplateFileName, OutboundContainerName, $"changedFile_{Guid.NewGuid()}.docx");
+                await UpdateTemplate.UpdateDocumentTemplate(content, headers, abbreviations, connectionString, TemplateContainerName, TemplateFileName, OutboundContainerName, $"changedFile_{Guid.NewGuid()}.docx");
 
                 return new OkResult(); 
             }
