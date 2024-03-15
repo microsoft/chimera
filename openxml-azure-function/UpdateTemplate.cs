@@ -10,7 +10,7 @@ namespace OpenXMLFunction
 {
     public static class UpdateTemplate
     {
-        public static async Task UpdateDocumentTemplate(Dictionary<string, string> sections, Dictionary<string, string> headers, string connectionString, string sourceContainerName, string sourceBlobName, string destinationContainerName, string destinationBlobName)
+        public static async Task UpdateDocumentTemplate(Dictionary<string, string> sections, Dictionary<string, string> headers, Dictionary<string, string> abbreviations, string connectionString, string sourceContainerName, string sourceBlobName, string destinationContainerName, string destinationBlobName)
         {
             BlobClient sourceBlobClient = CreateBlobClient(connectionString, sourceContainerName, sourceBlobName);
 
@@ -26,9 +26,10 @@ namespace OpenXMLFunction
                 FindAndReplace(ref mainDocumentPart, "TAKXXX", headers["TAK"].Substring(4));//TAK-XXX doesn't show the hyphen in InnerText
                 FindAndReplace(ref mainDocumentPart, "TKD-BCS-XXXXX-RX", headers["TKD"]);
                 FindAndReplace(ref mainDocumentPart, "TKD-BCS-XXXXX", headers["TKD"]);
+                BuildAbbreviations(ref mainDocumentPart, abbreviations);
 
-                //Replace sections
-                Body body = mainDocumentPart.Document.Body;
+                    //Replace sections
+                    Body body = mainDocumentPart.Document.Body;
 
                 foreach (var section in sections)
                 {
@@ -94,6 +95,56 @@ namespace OpenXMLFunction
             memoryStream.Position = 0;
             BlobClient destinationBlobClient = CreateBlobClient(connectionString, destinationContainerName, destinationBlobName);
             await destinationBlobClient.UploadAsync(memoryStream, overwrite: true);
+        }
+
+        private static void BuildAbbreviations(ref MainDocumentPart mainDocumentPart, Dictionary<string, string> abbreviations)
+        {
+            // Create a new table
+            Table newTable = new Table();
+
+            // Create a header row
+            TableRow headerRow = new TableRow();
+
+            // Create a cell for the header "Abbreviations"
+            TableCell abbreviationsCell = new TableCell();
+            Run abbreviationsRun = new Run(new Text("Abbreviations"));
+            abbreviationsRun.RunProperties = new RunProperties(new Bold(), new Underline { Val = UnderlineValues.Single });
+            abbreviationsCell.Append(new Paragraph(abbreviationsRun));
+            headerRow.Append(abbreviationsCell);
+
+            // Create a cell for the header "Definitions"
+            TableCell definitionsCell = new TableCell();
+            Run definitionsRun = new Run(new Text("Definitions"));
+            definitionsRun.RunProperties = new RunProperties(new Bold(), new Underline { Val = UnderlineValues.Single });
+            definitionsCell.Append(new Paragraph(definitionsRun));
+            headerRow.Append(definitionsCell);
+
+            // Add the header row to the table
+            newTable.Append(headerRow);
+
+            // Create a row for each key-value pair in the dictionary
+            foreach (KeyValuePair<string, string> entry in abbreviations)
+            {
+                // Create a new row
+                TableRow row = new TableRow();
+
+                // Create a cell for the key
+                TableCell keyCell = new TableCell(new Paragraph(new Run(new Text(entry.Key))));
+                row.Append(keyCell);
+
+                // Create a cell for the value
+                TableCell valueCell = new TableCell(new Paragraph(new Run(new Text(entry.Value))));
+                row.Append(valueCell);
+
+                // Add the row to the table
+                newTable.Append(row);
+            }
+
+            var oldTable = mainDocumentPart.Document.Body.Elements<Table>()
+                    .FirstOrDefault(t => t.InnerText.Contains("##ABBREVIATIONS##"));
+            mainDocumentPart.Document.Body.ReplaceChild(newTable, oldTable);
+
+            mainDocumentPart.Document.Save();
         }
 
         private static BlobClient CreateBlobClient(string connectionString, string containerName, string blobName)
