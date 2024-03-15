@@ -1,3 +1,5 @@
+import io
+import pandas as pd
 import json
 import logging
 import azure.functions as func
@@ -5,7 +7,8 @@ import azure.durable_functions as df
 
 from helpers import (
     KernelFactory,
-    Transform
+    Transform,
+    BlobClientFactory
 )
 from semantic_kernel.functions.kernel_arguments import KernelArguments
 
@@ -37,17 +40,22 @@ def my_orchestrator(context: df.DurableOrchestrationContext):
     for s in sections:
         tasks.append(context.call_activity("transform_content", s))
     
-    outputs = yield context.task_all(tasks)
+    outputs = yield context.task_all(tasks)    
     
     content = {}
     for k, v in outputs:
         content[k] = v    
     # Add a new activity to the content for Summary
     content["Summary"] = yield context.call_activity("summarize_content", outputs)
-
+    
+    abbvs = yield context.call_activity("validate_abbreviations", outputs)
+    # order abbvs by key
+    abbvs = sorted(abbvs, key=lambda x: list(x.keys())[0])
+    
     response = []
     response.append(("content", content))
     response.append(("headers", headers))
+    response.append(("abbreviations", abbvs))
     
     return dict(response)
 
@@ -84,3 +92,29 @@ async def summarize_content(content: list) -> str:
     result = await kernel.invoke(running_text_sk_function, running_text_args)    
 
     return str(result)
+
+@bp.activity_trigger(input_name="content")
+def validate_abbreviations(content: list) -> list:
+    sections = [(name, Transform.findAbbreviations(value)) for name, value in content]   
+
+    listOfAbbreviations = []
+    for k, v in sections:
+        listOfAbbreviations.extend(v)
+    #listOfAbbreviations = [item for sublist in sections.values() for item in sublist]
+    listOfAbbreviations = set(listOfAbbreviations)
+
+    account_url, container_name, blob_name = BlobClientFactory.get_storage_account_settings_from_env()
+    blob_client = BlobClientFactory.create_blob_client(account_url, container_name, blob_name)
+    
+    abbv_csv_file = blob_client.download_blob().readall().decode('utf-8')
+    abbreviations = pd.read_csv(io.StringIO(abbv_csv_file))
+    
+    meanings = []
+    for i in listOfAbbreviations:
+        if i in abbreviations['Acronym'].values:
+            meaning = abbreviations.loc[abbreviations['Acronym'] == i, "Definition"].values[0]
+            meanings.append({i: meaning})
+        else:
+            meanings.append({i: "Not found"})
+
+    return meanings

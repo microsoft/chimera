@@ -4,4 +4,7 @@
 
 azure-functions
 azure-functions-durable
+azure-storage-blob
+azure-identity
+pandas
 semantic-kernel==0.9.1b1

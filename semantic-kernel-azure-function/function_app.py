@@ -55,8 +55,7 @@ async def ExecutePlannerFunction(req: func.HttpRequest) -> func.HttpResponse:
     req_body = req.get_json()
     
     return func.HttpResponse("Hello World!")
-    
- 
+
 @app.route(route="transform")
 async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python Http trigger ExecuteTransformFunction processed a request.')
@@ -76,4 +75,4 @@ async def ExecuteTransformFunction(req: func.HttpRequest) -> func.HttpResponse:
     results.append(("content", contents))
     results.append(("headers", headers))
     
-    return func.HttpResponse(json.dumps(dict(results)))
+    return func.HttpResponse(json.dumps(dict(results)))    
