@@ -7,6 +7,8 @@ This repo contains 3 Azure Function projects which demonstrate how to:
 1. Use Azure OpenAI to validate and transform extracted content against known style guides.
 1. Re-assemble a template document with generated contents.
 
+![Application Logic Flow](./docs/AppLogicFlow.png)
+
 ## Projects
 - [semantic-kernel-azure-function](semantic-kernel-azure-function) - A Durable Python Azure Function which accepts extracted document contents and uses a selection of Semantic Kernel functions to validate and transform content.
 - [openxml-azure-function](openxml-azure-function) - A Dotnet Core Azure Function project which extracts content from a word document and re-assembles a template document using supplied content sections.
