@@ -41,7 +41,7 @@ jobs:
         creds: ${{ secrets.AZURE_RBAC_CREDENTIALS_KYLE }}
           
     - name: Download artifact from build job
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4.1.7
       with:
         name: functionapp
         path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
